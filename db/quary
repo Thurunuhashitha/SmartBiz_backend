@@ -1,0 +1,19 @@
+//company
+CREATE TABLE company (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(100) NOT NULL UNIQUE,
+    owner VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+//product
+CREATE TABLE products (
+    pID INT AUTO_INCREMENT PRIMARY KEY,
+    product VARCHAR(100) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    stock INT NOT NULL,
+    supplier VARCHAR(100),
+    date_added DATE
+);
