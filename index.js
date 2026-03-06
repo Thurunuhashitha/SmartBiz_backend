@@ -22,7 +22,10 @@ const expenseRoutes = require('./routes/expensesRoutes');
 app.use('/expense', expenseRoutes); 
 
 const salesRoutes = require('./routes/salesRoutes');
-app.use('/sales', salesRoutes); 
+app.use('/sales', salesRoutes);
+
+const adminRoutes = require('./routes/adminRoutes');
+app.use('/admin', adminRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
