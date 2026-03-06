@@ -9,8 +9,11 @@ app.use(express.urlencoded({ extended: true }));
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
 
-// const productRoutes = require('./routes/productRoutes');
-// app.use('/product', productRoutes); 
+const productRoutes = require('./routes/productRoutes');
+app.use('/product', productRoutes); 
+
+const customerRoutes = require('./routes/customerRoutes');
+app.use('/customer', customerRoutes); 
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
