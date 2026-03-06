@@ -24,3 +24,26 @@ CREATE TABLE customers (
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(100) NOT NULL
 );
+//supplier
+CREATE TABLE suppliers (
+    sID INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    product VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL
+);
+//expenses
+CREATE TABLE expenses (
+    eID INT AUTO_INCREMENT PRIMARY KEY,
+    expense VARCHAR(255) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    date DATE NOT NULL
+);
+//sales
+CREATE TABLE sales (
+    sID INT AUTO_INCREMENT PRIMARY KEY,
+    product VARCHAR(100) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    date DATE NOT NULL,
+    customer VARCHAR(100) NOT NULL
+);

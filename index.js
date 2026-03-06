@@ -18,6 +18,12 @@ app.use('/customer', customerRoutes);
 const supplierRoutes = require('./routes/supplierRoutes');
 app.use('/supplier', supplierRoutes); 
 
+const expenseRoutes = require('./routes/expensesRoutes');
+app.use('/expense', expenseRoutes); 
+
+const salesRoutes = require('./routes/salesRoutes');
+app.use('/sales', salesRoutes); 
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
 })
