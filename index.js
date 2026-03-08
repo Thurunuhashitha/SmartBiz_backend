@@ -1,29 +1,40 @@
 const express = require('express')
+const cors = require('cors')
+
 const app = express()
 const port = process.env.PORT || 3000
 
-// IMPORTANT
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware
+app.use(cors({
+  origin: "http://localhost:5173"
+}))
 
-const authRoutes = require('./routes/authRoutes');
-app.use('/auth', authRoutes);
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-const productRoutes = require('./routes/productRoutes');
-app.use('/product', productRoutes); 
+// Routes
+const authRoutes = require('./routes/authRoutes')
+app.use('/auth', authRoutes)
 
-const customerRoutes = require('./routes/customerRoutes');
-app.use('/customer', customerRoutes); 
+const productRoutes = require('./routes/productRoutes')
+app.use('/product', productRoutes)
 
-const supplierRoutes = require('./routes/supplierRoutes');
-app.use('/supplier', supplierRoutes); 
+const customerRoutes = require('./routes/customerRoutes')
+app.use('/customer', customerRoutes)
 
-const expenseRoutes = require('./routes/expensesRoutes');
-app.use('/expense', expenseRoutes); 
+const supplierRoutes = require('./routes/supplierRoutes')
+app.use('/supplier', supplierRoutes)
 
-const salesRoutes = require('./routes/salesRoutes');
-app.use('/sales', salesRoutes); 
+const expenseRoutes = require('./routes/expensesRoutes')
+app.use('/expense', expenseRoutes)
 
+const salesRoutes = require('./routes/salesRoutes')
+app.use('/sales', salesRoutes)
+
+const adminRoutes = require('./routes/adminRoutes')
+app.use('/admin', adminRoutes)
+
+// Start server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
 })

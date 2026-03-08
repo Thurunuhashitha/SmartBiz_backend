@@ -28,12 +28,17 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { company_name, password } = req.body;
 
-    if (!company_name || !password) 
+    if (!company_name || !password)
         return res.status(400).json({ error: 'Company name and password required' });
-
-    // --- HARD-CODED ADMIN LOGIN ---
-    if (company_name === "admin@gmail.com" && password === "111111") { 
-        return res.json({ message: "Admin login successful"});
+ 
+    // LOGIN (Company + Hardcoded Admin)
+    if (company_name === "admin@gmail.com" && password === "111111") {
+        const token = jwt.sign(
+            { id: 0, company_name: "admin@gmail.com", role: "admin" },
+            JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        return res.json({ message: "Admin login successful", token });
     }
 
     // --- DATABASE COMPANY LOGIN ---
