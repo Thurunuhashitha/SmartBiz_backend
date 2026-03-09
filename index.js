@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const cors = require('cors')
 
@@ -30,6 +31,9 @@ app.use('/admin', adminRoutes)
 
 const productRoutes = require('./routes/productRoutes')
 app.use('/product', productRoutes)
+
+const aiRoutes = require("./routes/aiRoutes.js");
+app.use("/ai", aiRoutes);
 
 // Start server
 app.listen(port, () => {
