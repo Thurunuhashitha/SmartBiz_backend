@@ -16,9 +16,6 @@ app.use(express.urlencoded({ extended: true }))
 const authRoutes = require('./routes/authRoutes')
 app.use('/auth', authRoutes)
 
-const productRoutes = require('./routes/productRoutes')
-app.use('/product', productRoutes)
-
 const customerRoutes = require('./routes/customerRoutes')
 app.use('/customer', customerRoutes)
 
@@ -27,9 +24,6 @@ app.use('/supplier', supplierRoutes)
 
 const expenseRoutes = require('./routes/expensesRoutes')
 app.use('/expense', expenseRoutes)
-
-const salesRoutes = require('./routes/salesRoutes')
-app.use('/sales', salesRoutes)
 
 const adminRoutes = require('./routes/adminRoutes')
 app.use('/admin', adminRoutes)

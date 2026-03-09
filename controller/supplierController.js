@@ -3,15 +3,15 @@ const connection = getConnection();
 
 // CREATE SUPPLIER
 exports.createSupplier = (req, res) => {
-    const { name, product, phone } = req.body;
+    const { name, product, quantity, price, phone, supply_date } = req.body;
 
-    if (!name || !product || !phone) {
-        return res.status(400).json({ error: 'Name, product, and phone are required' });
+    if (!name || !product || !quantity || !price || !phone || !supply_date) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
 
     connection.query(
-        'INSERT INTO suppliers (name, product, phone) VALUES (?, ?, ?)',
-        [name, product, phone],
+        'INSERT INTO suppliers (name, product, quantity, price, phone, supply_date) VALUES (?, ?, ?, ?, ?, ?)',
+        [name, product, quantity, price, phone, supply_date],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             res.json({ message: 'Supplier created successfully', supplierId: result.insertId });
@@ -30,24 +30,31 @@ exports.getAllSuppliers = (req, res) => {
 // GET SINGLE SUPPLIER
 exports.getSupplierById = (req, res) => {
     const { id } = req.params;
-    connection.query('SELECT * FROM suppliers WHERE sID = ?', [id], (err, results) => {
-        if (err) return res.status(500).json({ error: err });
-        if (results.length === 0) return res.status(404).json({ error: 'Supplier not found' });
-        res.json(results[0]);
-    });
+
+    connection.query(
+        'SELECT * FROM suppliers WHERE sID = ?',
+        [id],
+        (err, results) => {
+            if (err) return res.status(500).json({ error: err });
+            if (results.length === 0) return res.status(404).json({ error: 'Supplier not found' });
+
+            res.json(results[0]);
+        }
+    );
 };
 
 // UPDATE SUPPLIER
 exports.updateSupplier = (req, res) => {
     const { id } = req.params;
-    const { name, product, phone } = req.body;
+    const { name, product, quantity, price, phone, supply_date } = req.body;
 
     connection.query(
-        'UPDATE suppliers SET name = ?, product = ?, phone = ? WHERE sID = ?',
-        [name, product, phone, id],
+        'UPDATE suppliers SET name=?, product=?, quantity=?, price=?, phone=?, supply_date=? WHERE sID=?',
+        [name, product, quantity, price, phone, supply_date, id],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             if (result.affectedRows === 0) return res.status(404).json({ error: 'Supplier not found' });
+
             res.json({ message: 'Supplier updated successfully' });
         }
     );
@@ -57,9 +64,14 @@ exports.updateSupplier = (req, res) => {
 exports.deleteSupplier = (req, res) => {
     const { id } = req.params;
 
-    connection.query('DELETE FROM suppliers WHERE sID = ?', [id], (err, result) => {
-        if (err) return res.status(500).json({ error: err });
-        if (result.affectedRows === 0) return res.status(404).json({ error: 'Supplier not found' });
-        res.json({ message: 'Supplier deleted successfully' });
-    });
+    connection.query(
+        'DELETE FROM suppliers WHERE sID = ?',
+        [id],
+        (err, result) => {
+            if (err) return res.status(500).json({ error: err });
+            if (result.affectedRows === 0) return res.status(404).json({ error: 'Supplier not found' });
+
+            res.json({ message: 'Supplier deleted successfully' });
+        }
+    );
 };

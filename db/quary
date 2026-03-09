@@ -7,29 +7,27 @@ CREATE TABLE company (
     phone VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-//product
-CREATE TABLE products (
-    pID INT AUTO_INCREMENT PRIMARY KEY,
-    product VARCHAR(100) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    stock INT NOT NULL,
-    supplier VARCHAR(100),
-    date_added DATE
-);
+); 
 //customer
 CREATE TABLE customers (
     cID INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    email VARCHAR(100) NOT NULL
+    customer_name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    email VARCHAR(100),
+    product VARCHAR(100) NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    sale_date DATE NOT NULL
 );
 //supplier
 CREATE TABLE suppliers (
     sID INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     product VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    supply_date DATE NOT NULL
 );
 //expenses
 CREATE TABLE expenses (
@@ -38,12 +36,4 @@ CREATE TABLE expenses (
     amount DECIMAL(10,2) NOT NULL,
     date DATE NOT NULL
 );
-//sales
-CREATE TABLE sales (
-    sID INT AUTO_INCREMENT PRIMARY KEY,
-    product VARCHAR(100) NOT NULL,
-    quantity INT NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    date DATE NOT NULL,
-    customer VARCHAR(100) NOT NULL
-);
+ 
