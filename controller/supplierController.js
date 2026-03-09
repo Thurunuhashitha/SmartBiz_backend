@@ -3,15 +3,15 @@ const connection = getConnection();
 
 // CREATE SUPPLIER
 exports.createSupplier = (req, res) => {
-    const { name, product, quantity, price, phone, supply_date } = req.body;
+    const { name, product, quantity, price, phone  } = req.body;
 
-    if (!name || !product || !quantity || !price || !phone || !supply_date) {
+    if (!name || !product || !quantity || !price || !phone  ) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     connection.query(
-        'INSERT INTO suppliers (name, product, quantity, price, phone, supply_date) VALUES (?, ?, ?, ?, ?, ?)',
-        [name, product, quantity, price, phone, supply_date],
+        'INSERT INTO suppliers (name, product, quantity, price, phone ) VALUES (  ?, ?, ?, ?, ?)',
+        [name, product, quantity, price, phone ],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             res.json({ message: 'Supplier created successfully', supplierId: result.insertId });
@@ -46,11 +46,11 @@ exports.getSupplierById = (req, res) => {
 // UPDATE SUPPLIER
 exports.updateSupplier = (req, res) => {
     const { id } = req.params;
-    const { name, product, quantity, price, phone, supply_date } = req.body;
+    const { name, product, quantity, price, phone  } = req.body;
 
     connection.query(
-        'UPDATE suppliers SET name=?, product=?, quantity=?, price=?, phone=?, supply_date=? WHERE sID=?',
-        [name, product, quantity, price, phone, supply_date, id],
+        'UPDATE suppliers SET name=?, product=?, quantity=?, price=?, phone=?  WHERE sID=?',
+        [name, product, quantity, price, phone,  id],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             if (result.affectedRows === 0) return res.status(404).json({ error: 'Supplier not found' });

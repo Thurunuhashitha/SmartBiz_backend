@@ -3,15 +3,15 @@ const connection = getConnection();
 
 // CREATE CUSTOMER
 exports.createCustomer = (req, res) => {
-    const { customer_name, phone, email, product, quantity, unit_price, sale_date } = req.body;
+    const { customer_name, phone, email, product, quantity, unit_price } = req.body;
 
-    if (!customer_name || !phone || !email || !product || !quantity || !unit_price || !sale_date) {
+    if (!customer_name || !phone || !email || !product || !quantity || !unit_price) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     connection.query(
-        'INSERT INTO customers (customer_name, phone, email, product, quantity, unit_price, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [customer_name, phone, email, product, quantity, unit_price, sale_date],
+        'INSERT INTO customers (customer_name, phone, email, product, quantity, unit_price) VALUES ( ?, ?, ?, ?, ?, ?)',
+        [customer_name, phone, email, product, quantity, unit_price],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             res.json({ message: 'Customer created successfully', customerId: result.insertId });
@@ -46,11 +46,11 @@ exports.getCustomerById = (req, res) => {
 // UPDATE CUSTOMER
 exports.updateCustomer = (req, res) => {
     const { id } = req.params;
-    const { customer_name, phone, email, product, quantity, unit_price, sale_date } = req.body;
+    const { customer_name, phone, email, product, quantity, unit_price } = req.body;
 
     connection.query(
-        'UPDATE customers SET customer_name=?, phone=?, email=?, product=?, quantity=?, unit_price=?, sale_date=? WHERE cID=?',
-        [customer_name, phone, email, product, quantity, unit_price, sale_date, id],
+        'UPDATE customers SET customer_name=?, phone=?, email=?, product=?, quantity=?, unit_price=? WHERE cID=?',
+        [customer_name, phone, email, product, quantity, unit_price, id],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             if (result.affectedRows === 0) return res.status(404).json({ error: 'Customer not found' });

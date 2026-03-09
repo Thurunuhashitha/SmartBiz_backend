@@ -17,7 +17,7 @@ const authRoutes = require('./routes/authRoutes')
 app.use('/auth', authRoutes)
 
 const customerRoutes = require('./routes/customerRoutes')
-app.use('/customer', customerRoutes)
+app.use('/customer', customerRoutes) 
 
 const supplierRoutes = require('./routes/supplierRoutes')
 app.use('/supplier', supplierRoutes)
@@ -27,6 +27,9 @@ app.use('/expense', expenseRoutes)
 
 const adminRoutes = require('./routes/adminRoutes')
 app.use('/admin', adminRoutes)
+
+const productRoutes = require('./routes/productRoutes')
+app.use('/product', productRoutes)
 
 // Start server
 app.listen(port, () => {

@@ -64,3 +64,30 @@ exports.deleteExpense = (req, res) => {
         res.json({ message: 'Expense deleted successfully' });
     });
 };
+
+// GET PROFIT SUMMARY
+exports.getProfitSummary = (req, res) => {
+    const profitQuery = `
+        SELECT 
+            (SELECT COALESCE(SUM(quantity * unit_price), 0) FROM customers) AS total_sales,
+            (SELECT COALESCE(SUM(quantity * price), 0) FROM suppliers) AS total_supplier_costs,
+            (SELECT COALESCE(SUM(amount), 0) FROM expenses) AS total_other_expenses
+    `;
+
+    connection.query(profitQuery, (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        
+        const data = results[0];
+        const revenue = parseFloat(data.total_sales);
+        const supplierCosts = parseFloat(data.total_supplier_costs);
+        const otherExpenses = parseFloat(data.total_other_expenses);
+        const netProfit = revenue - (supplierCosts + otherExpenses);
+
+        res.json({
+            revenue,
+            supplierCosts,
+            otherExpenses,
+            netProfit
+        });
+    });
+};
