@@ -13,6 +13,9 @@ app.use(cors({
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+const loggerMiddleware = require('./middleware/loggerMiddleware')
+app.use(loggerMiddleware)
+
 // Routes
 const authRoutes = require('./routes/authRoutes')
 app.use('/auth', authRoutes)
@@ -31,6 +34,9 @@ app.use('/admin', adminRoutes)
 
 const productRoutes = require('./routes/productRoutes')
 app.use('/product', productRoutes)
+
+const dashboardRoutes = require('./routes/dashboardRoutes')
+app.use('/dashboard', dashboardRoutes)
 
 const aiRoutes = require("./routes/aiRoutes.js");
 app.use("/ai", aiRoutes);
