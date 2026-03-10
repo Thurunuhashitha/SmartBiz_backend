@@ -11,4 +11,9 @@ router.get('/getcompanybyid/:id', adminAuth, adminController.getCompanyById);
 router.put('/updatecompany/:id', adminAuth, adminController.updateCompany);
 router.delete('/deletecompany/:id', adminAuth, adminController.deleteCompany);
 
+// Dashboard data routes
+router.get('/logs', adminAuth, adminController.getUsageLogs);
+router.get('/ai-usage', adminAuth, adminController.getAIUsage);
+router.get('/system-stats', adminAuth, adminController.getSystemStats);
+
 module.exports = router;

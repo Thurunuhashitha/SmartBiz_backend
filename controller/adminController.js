@@ -65,3 +65,48 @@ exports.deleteCompany = (req, res) => {
         res.json({ message: 'Company deleted successfully' });
     });
 };
+
+// --- GET USAGE LOGS ---
+exports.getUsageLogs = (req, res) => {
+    const query = 'SELECT * FROM usage_logs ORDER BY timestamp DESC LIMIT 100';
+    connection.query(query, (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json(results);
+    });
+};
+
+// --- GET AI USAGE ---
+exports.getAIUsage = (req, res) => {
+    const query = 'SELECT * FROM ai_usage ORDER BY created_at DESC LIMIT 100';
+    connection.query(query, (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json(results);
+    });
+};
+
+// --- GET SYSTEM STATS ---
+exports.getSystemStats = (req, res) => {
+    const queries = {
+        totalCompanies: 'SELECT COUNT(*) as count FROM company',
+        totalUsers: 'SELECT COUNT(*) as count FROM company', 
+        totalTransactions: 'SELECT COUNT(*) as count FROM customers',
+        totalRevenue: 'SELECT SUM(quantity * unit_price) as revenue FROM customers',
+        aiRequests: 'SELECT COUNT(*) as count FROM ai_usage',
+        activeCompanies: 'SELECT COUNT(DISTINCT company_id) as count FROM usage_logs WHERE timestamp > DATE_SUB(NOW(), INTERVAL 30 DAY)'
+    };
+
+    const results = {};
+    const queryKeys = Object.keys(queries);
+    let completed = 0;
+
+    queryKeys.forEach(key => {
+        connection.query(queries[key], (err, result) => {
+            if (err) return res.status(500).json({ error: err });
+            results[key] = result[0].count || result[0].revenue || 0;
+            completed++;
+            if (completed === queryKeys.length) {
+                res.json(results);
+            }
+        });
+    });
+};

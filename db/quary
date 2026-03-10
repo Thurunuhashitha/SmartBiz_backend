@@ -1,4 +1,4 @@
-//company
+------------company------------
 CREATE TABLE company (
     id INT AUTO_INCREMENT PRIMARY KEY,
     company_name VARCHAR(100) NOT NULL UNIQUE,
@@ -8,7 +8,7 @@ CREATE TABLE company (
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ); 
-//customer
+------------customer------------
 CREATE TABLE customers (
     cID INT AUTO_INCREMENT PRIMARY KEY,
     customer_name VARCHAR(100) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE customers (
     unit_price DECIMAL(10,2) NOT NULL,
     sale_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-//supplier
+------------supplier------------
 CREATE TABLE suppliers (
     sID INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -29,23 +29,23 @@ CREATE TABLE suppliers (
     phone VARCHAR(20) NOT NULL,
     supply_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );  
-//expenses
+------------expenses------------
 CREATE TABLE expenses (
     eID INT AUTO_INCREMENT PRIMARY KEY,
     expense VARCHAR(255) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     date DATE NOT NULL
 );
- 
- CREATE TABLE products (
+------------products------------ 
+CREATE TABLE products (
     pID INT AUTO_INCREMENT PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL UNIQUE,
     current_stock INT NOT NULL DEFAULT 0,
     unit_price DECIMAL(10,2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-DELIMITER //
 
+------------after supplier insert------------
 CREATE TRIGGER after_supplier_insert
 AFTER INSERT ON suppliers
 FOR EACH ROW
@@ -60,12 +60,9 @@ BEGIN
         INSERT INTO products (product_name, current_stock, unit_price) 
         VALUES (NEW.product, NEW.quantity, NEW.price);
     END IF;
-END; //
+END; 
 
-DELIMITER ;
-
-DELIMITER //
-
+------------after customer insert------------
 CREATE TRIGGER after_customer_insert
 AFTER INSERT ON customers
 FOR EACH ROW
@@ -73,9 +70,32 @@ BEGIN
     UPDATE products 
     SET current_stock = current_stock - NEW.quantity 
     WHERE product_name = NEW.product;
-END; //
+END; 
 
-DELIMITER ;
+
+-- Usage Logs table for tracking system activity
+CREATE TABLE usage_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    company_id INT,
+    action VARCHAR(255) NOT NULL,
+    method VARCHAR(10) NOT NULL,
+    path VARCHAR(255) NOT NULL,
+    status_code INT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45)
+);
+
+-- AI Usage table for monitoring AI feature consumption
+CREATE TABLE ai_usage (
+    usage_id INT AUTO_INCREMENT PRIMARY KEY,
+    company_id INT,
+    feature_type VARCHAR(50) NOT NULL, -- e.g., 'report', 'email', 'marketing'
+    prompt_tokens INT DEFAULT 0,
+    completion_tokens INT DEFAULT 0,
+    request_details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 
 
