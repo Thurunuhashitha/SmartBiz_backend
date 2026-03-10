@@ -4,5 +4,6 @@ const dashboardController = require('../controller/dashboardController');
 const { verifyToken } = require('../middleware/authMiddleware'); // Assuming this exists based on usual patterns
 
 router.get('/getStats', verifyToken, dashboardController.getDashboardStats);
+router.get('/getSalesReport', verifyToken, dashboardController.getSalesReport);
 
 module.exports = router;
