@@ -32,6 +32,9 @@ app.use('/admin', adminRoutes)
 const productRoutes = require('./routes/productRoutes')
 app.use('/product', productRoutes)
 
+const dashboardRoutes = require('./routes/dashboardRoutes')
+app.use('/dashboard', dashboardRoutes)
+
 const aiRoutes = require("./routes/aiRoutes.js");
 app.use("/ai", aiRoutes);
 
