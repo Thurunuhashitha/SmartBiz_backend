@@ -9,5 +9,6 @@ router.get('/getAllExpenses', verifyToken, expensesController.getAllExpenses);
 router.get('/getExpenseById/:id', verifyToken, expensesController.getExpenseById);
 router.put('/updateExpense/:id', verifyToken, expensesController.updateExpense);
 router.delete('/deleteExpense/:id', verifyToken, expensesController.deleteExpense);
+router.get('/getProfitSummary', verifyToken, expensesController.getProfitSummary);
 
 module.exports = router;

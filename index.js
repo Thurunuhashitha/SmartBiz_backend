@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const cors = require('cors')
 
@@ -12,15 +13,15 @@ app.use(cors({
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+const loggerMiddleware = require('./middleware/loggerMiddleware')
+app.use(loggerMiddleware)
+
 // Routes
 const authRoutes = require('./routes/authRoutes')
 app.use('/auth', authRoutes)
 
-const productRoutes = require('./routes/productRoutes')
-app.use('/product', productRoutes)
-
 const customerRoutes = require('./routes/customerRoutes')
-app.use('/customer', customerRoutes)
+app.use('/customer', customerRoutes) 
 
 const supplierRoutes = require('./routes/supplierRoutes')
 app.use('/supplier', supplierRoutes)
@@ -28,11 +29,17 @@ app.use('/supplier', supplierRoutes)
 const expenseRoutes = require('./routes/expensesRoutes')
 app.use('/expense', expenseRoutes)
 
-const salesRoutes = require('./routes/salesRoutes')
-app.use('/sales', salesRoutes)
-
 const adminRoutes = require('./routes/adminRoutes')
 app.use('/admin', adminRoutes)
+
+const productRoutes = require('./routes/productRoutes')
+app.use('/product', productRoutes)
+
+const dashboardRoutes = require('./routes/dashboardRoutes')
+app.use('/dashboard', dashboardRoutes)
+
+const aiRoutes = require("./routes/aiRoutes.js");
+app.use("/ai", aiRoutes);
 
 // Start server
 app.listen(port, () => {

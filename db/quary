@@ -1,4 +1,4 @@
-//company
+------------company------------
 CREATE TABLE company (
     id INT AUTO_INCREMENT PRIMARY KEY,
     company_name VARCHAR(100) NOT NULL UNIQUE,
@@ -7,43 +7,123 @@ CREATE TABLE company (
     phone VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-//product
-CREATE TABLE products (
-    pID INT AUTO_INCREMENT PRIMARY KEY,
-    product VARCHAR(100) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    stock INT NOT NULL,
-    supplier VARCHAR(100),
-    date_added DATE
-);
-//customer
+); 
+------------customer------------
 CREATE TABLE customers (
     cID INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    email VARCHAR(100) NOT NULL
+    company_id INT NOT NULL,
+    customer_name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    email VARCHAR(100),
+    product VARCHAR(100) NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    sale_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
 );
-//supplier
+------------supplier------------
 CREATE TABLE suppliers (
     sID INT AUTO_INCREMENT PRIMARY KEY,
+    company_id INT NOT NULL,
     name VARCHAR(100) NOT NULL,
-    product VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL
-);
-//expenses
-CREATE TABLE expenses (
-    eID INT AUTO_INCREMENT PRIMARY KEY,
-    expense VARCHAR(255) NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    date DATE NOT NULL
-);
-//sales
-CREATE TABLE sales (
-    sID INT AUTO_INCREMENT PRIMARY KEY,
     product VARCHAR(100) NOT NULL,
     quantity INT NOT NULL,
     price DECIMAL(10,2) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    supply_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
+);  
+------------expenses------------
+CREATE TABLE expenses (
+    eID INT AUTO_INCREMENT PRIMARY KEY,
+    company_id INT NOT NULL,
+    expense VARCHAR(255) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
     date DATE NOT NULL,
-    customer VARCHAR(100) NOT NULL
+    FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
 );
+------------products------------ 
+CREATE TABLE products (
+    pID INT AUTO_INCREMENT PRIMARY KEY,
+    company_id INT NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    current_stock INT NOT NULL DEFAULT 0,
+    unit_price DECIMAL(10,2) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(company_id, product_name),
+    FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
+);
+
+------------after supplier insert------------
+DELIMITER $$
+
+CREATE TRIGGER after_supplier_insert
+AFTER INSERT ON suppliers
+FOR EACH ROW
+BEGIN
+    -- Check if the product already exists for this company
+    IF EXISTS (
+        SELECT 1 
+        FROM products 
+        WHERE product_name = NEW.product 
+        AND company_id = NEW.company_id
+    ) THEN
+
+        UPDATE products
+        SET current_stock = current_stock + NEW.quantity
+        WHERE product_name = NEW.product
+        AND company_id = NEW.company_id;
+
+    ELSE
+
+        -- Insert new product if it doesn't exist
+        INSERT INTO products (product_name, current_stock, unit_price, company_id)
+        VALUES (NEW.product, NEW.quantity, NEW.price, NEW.company_id);
+
+    END IF;
+END$$
+
+DELIMITER ;
+
+------------after customer insert------------
+DELIMITER $$
+
+CREATE TRIGGER after_customer_insert
+AFTER INSERT ON customers
+FOR EACH ROW
+BEGIN
+    UPDATE products
+    SET current_stock = current_stock - NEW.quantity
+    WHERE product_name = NEW.product
+    AND company_id = NEW.company_id;
+END$$
+
+DELIMITER ;
+
+
+-- Usage Logs table for tracking system activity
+CREATE TABLE usage_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    company_id INT,
+    action VARCHAR(255) NOT NULL,
+    method VARCHAR(10) NOT NULL,
+    path VARCHAR(255) NOT NULL,
+    status_code INT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45)
+);
+
+-- AI Usage table for monitoring AI feature consumption
+CREATE TABLE ai_usage (
+    usage_id INT AUTO_INCREMENT PRIMARY KEY,
+    company_id INT,
+    feature_type VARCHAR(50) NOT NULL, -- e.g., 'report', 'email', 'marketing'
+    prompt_tokens INT DEFAULT 0,
+    completion_tokens INT DEFAULT 0,
+    request_details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+

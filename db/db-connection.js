@@ -8,7 +8,7 @@ function getConnection() {
             host: 'localhost',
             user: 'root',
             password: '2000kgT.',
-            database: 'smartBiz'
+            database: 'smartBiznew'
         });
 
         connection.connect(err => {
