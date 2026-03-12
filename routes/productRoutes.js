@@ -5,5 +5,6 @@ const { verifyToken } = require('../middleware/authMiddleware');
 
 // Routes
 router.get('/getAllProducts', verifyToken, productController.getAllProducts);
+router.get('/getAvailableProducts', verifyToken, productController.getAvailableProducts);
 
 module.exports = router;
