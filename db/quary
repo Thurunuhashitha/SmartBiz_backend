@@ -125,5 +125,25 @@ CREATE TABLE ai_usage (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Plans table for managing subscription plans
+CREATE TABLE plans (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    stock_limit_value DECIMAL(15,2) DEFAULT NULL, -- NULL for unlimited
+    features TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--------
+ALTER TABLE company ADD COLUMN plan_id INT DEFAULT 1;
+ALTER TABLE company ADD CONSTRAINT fk_company_plan FOREIGN KEY (plan_id) REFERENCES plans(id);
+
+------
+INSERT INTO plans (name, stock_limit_value, features) VALUES 
+('Free Plan', 2000000.00, 'Basic access, Stock limit: 2M'),
+('Medium Plan', 5000000.00, 'All features, Stock limit: 5M'),
+('Prime Plan', NULL, 'Unlimited access, No stock limit');
+
 
 
