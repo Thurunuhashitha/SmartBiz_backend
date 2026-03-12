@@ -111,13 +111,19 @@ exports.deleteSupplier = (req, res) => {
     const { id } = req.params;
     const company_id = req.user.id;
 
+    console.log(`Attempting to delete supplier ID: ${id}, company_id: ${company_id}`);
+
     connection.query(
         'DELETE FROM suppliers WHERE sID = ? AND company_id = ?',
         [id, company_id],
         (err, result) => {
-            if (err) return res.status(500).json({ error: err });
+            if (err) {
+                console.error('Delete supplier error:', err);
+                return res.status(500).json({ error: err.message || 'Database error while deleting supplier' });
+            }
             if (result.affectedRows === 0) return res.status(404).json({ error: 'Supplier not found' });
 
+            console.log(`Supplier ID ${id} deleted successfully`);
             res.json({ message: 'Supplier deleted successfully' });
         }
     );
