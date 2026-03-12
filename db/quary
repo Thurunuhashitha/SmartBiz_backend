@@ -54,7 +54,7 @@ CREATE TABLE products (
     FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
 );
 
-------------after supplier insert------------
+------------supplier triggers------------
 DELIMITER $$
 
 CREATE TRIGGER after_supplier_insert
@@ -83,9 +83,50 @@ BEGIN
     END IF;
 END$$
 
+CREATE TRIGGER after_supplier_update
+AFTER UPDATE ON suppliers
+FOR EACH ROW
+BEGIN
+    IF OLD.product = NEW.product THEN
+        -- Quantity changed, same product
+        UPDATE products
+        SET current_stock = current_stock + (NEW.quantity - OLD.quantity)
+        WHERE product_name = NEW.product
+        AND company_id = NEW.company_id;
+    ELSE
+        -- Product name changed
+        -- 1. Deduct old quantity from old product
+        UPDATE products
+        SET current_stock = current_stock - OLD.quantity
+        WHERE product_name = OLD.product
+        AND company_id = OLD.company_id;
+
+        -- 2. Add new quantity to new product (check if exists)
+        IF EXISTS (SELECT 1 FROM products WHERE product_name = NEW.product AND company_id = NEW.company_id) THEN
+            UPDATE products
+            SET current_stock = current_stock + NEW.quantity
+            WHERE product_name = NEW.product
+            AND company_id = NEW.company_id;
+        ELSE
+            INSERT INTO products (product_name, current_stock, unit_price, company_id)
+            VALUES (NEW.product, NEW.quantity, NEW.price, NEW.company_id);
+        END IF;
+    END IF;
+END$$
+
+CREATE TRIGGER after_supplier_delete
+AFTER DELETE ON suppliers
+FOR EACH ROW
+BEGIN
+    UPDATE products
+    SET current_stock = current_stock - OLD.quantity
+    WHERE product_name = OLD.product
+    AND company_id = OLD.company_id;
+END$$
+
 DELIMITER ;
 
-------------after customer insert------------
+------------customer triggers------------
 DELIMITER $$
 
 CREATE TRIGGER after_customer_insert
@@ -96,6 +137,42 @@ BEGIN
     SET current_stock = current_stock - NEW.quantity
     WHERE product_name = NEW.product
     AND company_id = NEW.company_id;
+END$$
+
+CREATE TRIGGER after_customer_update
+AFTER UPDATE ON customers
+FOR EACH ROW
+BEGIN
+    IF OLD.product = NEW.product THEN
+        -- Quantity changed, same product
+        UPDATE products
+        SET current_stock = current_stock - (NEW.quantity - OLD.quantity)
+        WHERE product_name = NEW.product
+        AND company_id = NEW.company_id;
+    ELSE
+        -- Product name changed
+        -- 1. Add back old quantity to old product
+        UPDATE products
+        SET current_stock = current_stock + OLD.quantity
+        WHERE product_name = OLD.product
+        AND company_id = OLD.company_id;
+
+        -- 2. Subtract new quantity from new product
+        UPDATE products
+        SET current_stock = current_stock - NEW.quantity
+        WHERE product_name = NEW.product
+        AND company_id = NEW.company_id;
+    END IF;
+END$$
+
+CREATE TRIGGER after_customer_delete
+AFTER DELETE ON customers
+FOR EACH ROW
+BEGIN
+    UPDATE products
+    SET current_stock = current_stock + OLD.quantity
+    WHERE product_name = OLD.product
+    AND company_id = OLD.company_id;
 END$$
 
 DELIMITER ;
