@@ -41,6 +41,9 @@ app.use('/dashboard', dashboardRoutes)
 const aiRoutes = require("./routes/aiRoutes.js");
 app.use("/ai", aiRoutes);
 
+const planRoutes = require('./routes/planRoutes');
+app.use('/plans', planRoutes);
+
 // Start server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
