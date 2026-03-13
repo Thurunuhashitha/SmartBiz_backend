@@ -1,14 +1,50 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+require('dotenv').config();
+const express = require('express')
+const cors = require('cors')
 
-app.use(express.json());
+const app = express()
+const port = process.env.PORT || 3000
 
-const authRoutes = require('./routes/authRoutes');
-app.use('/auth', authRoutes); 
+// Middleware
+app.use(cors({
+  origin: "http://localhost:5173"
+}))
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+const loggerMiddleware = require('./middleware/loggerMiddleware')
+app.use(loggerMiddleware)
+
+// Routes
+const authRoutes = require('./routes/authRoutes')
+app.use('/auth', authRoutes)
+
+const customerRoutes = require('./routes/customerRoutes')
+app.use('/customer', customerRoutes) 
+
+const supplierRoutes = require('./routes/supplierRoutes')
+app.use('/supplier', supplierRoutes)
+
+const expenseRoutes = require('./routes/expensesRoutes')
+app.use('/expense', expenseRoutes)
+
+const adminRoutes = require('./routes/adminRoutes')
+app.use('/admin', adminRoutes)
+
+const productRoutes = require('./routes/productRoutes')
+app.use('/product', productRoutes)
+
+const dashboardRoutes = require('./routes/dashboardRoutes')
+app.use('/dashboard', dashboardRoutes)
+
+const aiRoutes = require("./routes/aiRoutes.js");
+app.use("/ai", aiRoutes);
+
+const planRoutes = require('./routes/planRoutes');
+app.use('/plans', planRoutes);
 
 // Start server
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
-
+  console.log(`Server running on port ${port}`)
+})
