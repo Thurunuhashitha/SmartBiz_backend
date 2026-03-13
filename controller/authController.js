@@ -61,7 +61,16 @@ exports.login = async (req, res) => {
                 { expiresIn: '1h' }
             );
 
-            res.json({ message: 'Login successful', token });
+            res.json({
+                message: 'Login successful',
+                token,
+                user: {
+                    id: company.id,
+                    company_name: company.company_name,
+                    role: "company",
+                    plan_id: company.plan_id // Return the saved plan_id
+                }
+            });
         }
     );
 };

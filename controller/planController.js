@@ -9,6 +9,22 @@ exports.getAllPlans = (req, res) => {
     });
 };
 
+// --- GET CURRENT PLAN FOR LOGGED IN COMPANY ---
+exports.getCurrentPlan = (req, res) => {
+    const company_id = req.user.id;
+
+    connection.query(
+        'SELECT plan_id FROM company WHERE id = ?',
+        [company_id],
+        (err, results) => {
+            if (err) return res.status(500).json({ error: err });
+            if (results.length === 0) return res.status(404).json({ error: 'Company not found' });
+            
+            res.json({ plan_id: results[0].plan_id });
+        }
+    );
+};
+
 // --- ACTIVATE PLAN FOR A COMPANY ---
 exports.activatePlan = (req, res) => {
     const { plan_id } = req.body;

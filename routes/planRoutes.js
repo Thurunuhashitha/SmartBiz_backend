@@ -6,6 +6,7 @@ const { adminAuth } = require('../middleware/adminMiddleware');
 
 // Public/User routes
 router.get('/getall', verifyToken, planController.getAllPlans);
+router.get('/current', verifyToken, planController.getCurrentPlan);
 router.post('/activate', verifyToken, planController.activatePlan);
 
 // Admin routes

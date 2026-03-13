@@ -33,10 +33,11 @@ exports.createSupplier = (req, res) => {
         connection.query(currentStockValueQuery, [company_id], (err, stockResults) => {
             if (err) return res.status(500).json({ error: err });
 
-            const currentTotal = stockResults[0].total_value || 0;
-            const newValue = quantity * price;
+            const currentTotal = parseFloat(stockResults[0].total_value) || 0;
+            const newValue = parseFloat(quantity) * parseFloat(price);
+            const numLimit = parseFloat(limit);
 
-            if (currentTotal + newValue > limit) {
+            if (currentTotal + newValue > numLimit) {
                 return res.status(403).json({
                     error: 'Stock limit exceeded',
                     limit: limit,
